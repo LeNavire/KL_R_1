@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diagnostic et Expertise - Détermination du KL et R</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8fafc;
+      }
+
+      /* Personnalisation avancée des boutons radio */
+      .radio-custom:checked + label {
+        background-color: #eff6ff !important;
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 1px #3b82f6 !important;
+      }
+      .radio-custom:checked + label .indicator {
+        background-color: #3b82f6;
+        border-color: #3b82f6;
+      }
+      .radio-custom:checked + label .indicator::after {
+        content: "";
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: white;
+      }
+      .radio-custom:checked + label .level-badge {
+        background-color: #dbeafe;
+        color: #1e3a8a;
+        border-color: #bfdbfe;
+      }
+    </style>
+  </head>
+  <body class="text-slate-800 py-8">
+    <!-- Container principal (90% de la page) -->
+    <div class="w-[90%] max-w-7xl mx-auto space-y-8">
+      <!-- En-tête -->
+      <header class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <div class="flex items-center space-x-4">
+          <div class="bg-blue-600 p-3 rounded-lg shadow-md shadow-blue-200">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight">
+              Évaluation du Niveau de Connaissance (KL) et Coefficient (R)
+            </h1>
+            <p class="text-slate-500 font-medium mt-1">
+              Processus: DEX | Référence: P1-DEX-1 | Basé sur le Guide CSTB
+              Eurocode 8
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Étape 1 : Choix de l'approche -->
+      <section
+        class="bg-white p-6 rounded-xl shadow-sm border border-slate-200"
+      >
+        <h2 class="text-lg font-bold text-slate-800 mb-5 flex items-center">
+          <span
+            class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3 font-black"
+            >1</span
+          >
+          Choix de la Variante d'Évaluation
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <label class="cursor-pointer relative">
+            <input
+              type="radio"
+              name="approach"
+              value="a"
+              class="peer sr-only"
+              checked
+              onchange="updateForm()"
+            />
+            <div
+              class="p-5 border-2 border-slate-200 rounded-xl hover:bg-slate-50 transition-all peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:shadow-sm"
+            >
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="font-black text-blue-900 text-lg">Variante A</h3>
+                  <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                    Basée principalement sur des examens et inspections in situ
+                    (lorsque les plans initiaux détaillés ne sont pas
+                    disponibles).
+                  </p>
+                </div>
+                <div
+                  class="w-6 h-6 rounded-full border-2 border-slate-300 peer-checked:border-blue-500 peer-checked:bg-blue-500 flex items-center justify-center transition-colors ml-4 shrink-0"
+                >
+                  <svg
+                    class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </label>
+          <label class="cursor-pointer relative">
+            <input
+              type="radio"
+              name="approach"
+              value="b"
+              class="peer sr-only"
+              onchange="updateForm()"
+            />
+            <div
+              class="p-5 border-2 border-slate-200 rounded-xl hover:bg-slate-50 transition-all peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:shadow-sm"
+            >
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="font-black text-blue-900 text-lg">Variante B</h3>
+                  <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                    Basée sur l'existence et l'exploitation de la documentation
+                    existante (Plans d'ensemble, détaillés, rapports d'essais).
+                  </p>
+                </div>
+                <div
+                  class="w-6 h-6 rounded-full border-2 border-slate-300 peer-checked:border-blue-500 peer-checked:bg-blue-500 flex items-center justify-center transition-colors ml-4 shrink-0"
+                >
+                  <svg
+                    class="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Étape 2 : Critères séparés en 3 catégories -->
+      <section
+        class="bg-white p-6 rounded-xl shadow-sm border border-slate-200"
+      >
+        <h2 class="text-lg font-bold text-slate-800 mb-2 flex items-center">
+          <span
+            class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3 font-black"
+            >2</span
+          >
+          Validation des Critères par Catégorie
+        </h2>
+        <div
+          class="text-sm text-amber-700 bg-amber-50 border border-amber-200 p-3.5 rounded-lg mb-6 flex items-start"
+        >
+          <svg
+            class="w-5 h-5 mr-2 shrink-0 text-amber-500 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <span
+            ><strong>Règle d'ingénierie :</strong> Le Niveau de Connaissance
+            global (KL) correspond au niveau le plus faible atteint parmi les
+            trois catégories, selon la formule : KL = Min (Géométrie,
+            Dispositions, Matériaux).</span
+          >
+        </div>
+
+        <!-- Conteneur des 3 catégories, chacune bien séparée -->
+        <div
+          class="grid grid-cols-1 lg:grid-cols-3 gap-6"
+          id="criteria-container"
+        >
+          <!-- 1. Géométrie -->
+          <div
+            class="bg-slate-50 border border-slate-200 p-5 rounded-2xl shadow-sm flex flex-col h-full"
+          >
+            <h3
+              class="font-black text-slate-800 text-lg border-b-2 border-slate-200 pb-3 mb-4 flex items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6 mr-2 text-blue-600"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"
+                />
+                <path d="m14.5 12.5 2-2" />
+                <path d="m11.5 9.5 2-2" />
+                <path d="m8.5 6.5 2-2" />
+                <path d="m17.5 15.5 2-2" />
+              </svg>
+              1. Géométrie
+            </h3>
+            <div id="col-geo" class="space-y-3 flex-1"></div>
+          </div>
+
+          <!-- 2. Dispositions Constructives -->
+          <div
+            class="bg-slate-50 border border-slate-200 p-5 rounded-2xl shadow-sm flex flex-col h-full"
+          >
+            <h3
+              class="font-black text-slate-800 text-lg border-b-2 border-slate-200 pb-3 mb-4 flex items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6 mr-2 text-emerald-600"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                <polyline points="2 17 12 22 22 17" />
+                <polyline points="2 12 12 17 22 12" />
+              </svg>
+              2. Dispositions Constructives
+            </h3>
+            <div id="col-disp" class="space-y-3 flex-1"></div>
+          </div>
+
+          <!-- 3. Matériaux -->
+          <div
+            class="bg-slate-50 border border-slate-200 p-5 rounded-2xl shadow-sm flex flex-col h-full"
+          >
+            <h3
+              class="font-black text-slate-800 text-lg border-b-2 border-slate-200 pb-3 mb-4 flex items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6 mr-2 text-amber-600"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <path d="M12 3v18" />
+                <path d="M3 9h18" />
+                <path d="M3 15h18" />
+              </svg>
+              3. Matériaux
+            </h3>
+            <div id="col-mat" class="space-y-3 flex-1"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Étape 3 : Résultat et Tableau 1 -->
+      <section
+        class="bg-slate-900 text-white p-6 rounded-xl shadow-lg relative overflow-hidden"
+      >
+        <div class="absolute top-0 right-0 opacity-5 pointer-events-none">
+          <svg width="300" height="300" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L2 22h20L12 2zm0 4l7.5 15h-15L12 6z" />
+          </svg>
+        </div>
+
+        <h2 class="text-xl font-bold mb-6 flex items-center">
+          <span
+            class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm font-black"
+            >3</span
+          >
+          Synthèse et Paramètres Sismiques
+        </h2>
+
+        <!-- Résultat K-L -->
+        <div class="flex flex-col md:flex-row items-center gap-6 mb-8">
+          <div
+            class="bg-slate-800 p-6 rounded-xl border border-slate-700 flex-1 w-full flex items-center justify-between shadow-inner"
+          >
+            <div>
+              <p
+                class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1"
+              >
+                Niveau de Connaissance Évalué
+              </p>
+              <p id="result-kl" class="text-4xl font-black text-slate-500 mt-1">
+                En attente...
+              </p>
+            </div>
+            <div
+              id="result-r"
+              class="text-3xl font-black text-slate-500 bg-slate-900 px-6 py-4 rounded-lg border border-slate-700"
+            >
+              R = --
+            </div>
+          </div>
+        </div>
+
+        <!-- Tableau 1 -->
+        <div
+          class="bg-white text-slate-800 rounded-lg overflow-hidden shadow-inner"
+        >
+          <div class="p-4 bg-slate-100 border-b border-slate-200">
+            <h4 class="font-black text-slate-700 text-sm uppercase">
+              Tableau - 1 : Valeurs du coefficient de comportement R en fonction
+              du niveau de connaissance
+            </h4>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-center border-collapse">
+              <thead>
+                <tr
+                  class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200"
+                >
+                  <th
+                    class="p-3 border-r border-slate-200 align-middle"
+                    rowspan="2"
+                  >
+                    TYPE DE CONTREVENTEMENT
+                  </th>
+                  <th class="p-3 border-b border-slate-200" colspan="3">
+                    COEFFICIENT DE COMPORTEMENT - R
+                  </th>
+                </tr>
+                <tr
+                  class="bg-slate-50 text-slate-600 font-semibold text-xs uppercase tracking-wider border-b border-slate-200"
+                >
+                  <th class="p-3 border-r border-slate-200">
+                    Niveau de Connaissance K-L1
+                  </th>
+                  <th class="p-3 border-r border-slate-200">
+                    Niveau de Connaissance K-L2
+                  </th>
+                  <th class="p-3">Niveau de Connaissance K-L3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-lg font-medium">
+                  <td
+                    class="p-5 border-r border-slate-200 bg-slate-50 text-sm font-black text-slate-600"
+                  >
+                    TOUT TYPE DE STRUCTURE
+                  </td>
+                  <td
+                    id="cell-kl1"
+                    class="p-5 border-r border-slate-200 transition-all duration-300"
+                  >
+                    1.5
+                  </td>
+                  <td
+                    id="cell-kl2"
+                    class="p-5 border-r border-slate-200 transition-all duration-300"
+                  >
+                    2
+                  </td>
+                  <td id="cell-kl3" class="p-5 transition-all duration-300">
+                    RPA
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div
+          id="modele-verif"
+          class="mt-5 text-sm text-slate-400 italic bg-slate-800/50 p-3 rounded border border-slate-700"
+        >
+          Modèle de vérification de capacité locale : En attente d'évaluation
+          complète de l'ensemble des critères.
+        </div>
+      </section>
+    </div>
+
+    <script>
+      // Base de données intégrale des critères selon le Tableau 3 (KL.pdf)
+      // Les critères sont fidèlement reportés pour chaque catégorie et niveau.
+      const db = {
+        a: {
+          geo: [
+            {
+              id: "g_a_3",
+              val: 3,
+              title: "Niveau KL1 / KL2 / KL3",
+              criteria: ["Examen in situ (visuel)"],
+            },
+          ],
+          disp: [
+            {
+              id: "d_a_1",
+              val: 1,
+              title: "Niveau KL1",
+              criteria: [
+                "Dimensionnement simulé",
+                "Inspection in situ limitée : 20% d'éléments soumis à vérification",
+              ],
+            },
+            {
+              id: "d_a_2",
+              val: 2,
+              title: "Niveau KL2",
+              criteria: [
+                "Inspection in situ étendue : 50% d'éléments soumis à vérification",
+              ],
+            },
+            {
+              id: "d_a_3",
+              val: 3,
+              title: "Niveau KL3",
+              criteria: [
+                "Inspection in situ complète : 80% d'éléments soumis à vérification",
+              ],
+            },
+          ],
+          mat: [
+            {
+              id: "m_a_1",
+              val: 1,
+              title: "Niveau KL1",
+              criteria: [
+                "Dimensionnement simulé",
+                "Essais destructifs et non destructifs limités : 1 essai par niveau",
+              ],
+            },
+            {
+              id: "m_a_2",
+              val: 2,
+              title: "Niveau KL2",
+              criteria: [
+                "Essais destructifs et non destructifs étendus : 2 essais par niveau",
+              ],
+            },
+            {
+              id: "m_a_3",
+              val: 3,
+              title: "Niveau KL3",
+              criteria: [
+                "Essais destructifs et non destructifs complets : 3 essais par niveau",
+              ],
+            },
+          ],
+        },
+        b: {
+          geo: [
+            {
+              id: "g_b_2",
+              val: 2,
+              title: "Niveau KL1 / KL2",
+              criteria: ["Plans d'ensemble", "Echantillonnage"],
+            },
+            {
+              id: "g_b_3",
+              val: 3,
+              title: "Niveau KL3",
+              criteria: [
+                "Plans d'ensemble",
+                "Plans de construction détaillés",
+                "Echantillonnage",
+              ],
+            },
+          ],
+          disp: [
+            {
+              id: "d_b_1",
+              val: 1,
+              title: "Niveau KL1",
+              criteria: [
+                "Inspection in situ étendue : 50% d'éléments soumis à vérification",
+              ],
+            },
+            {
+              id: "d_b_3",
+              val: 3,
+              title: "Niveau KL2 / KL3",
+              criteria: [
+                "Plans de construction détaillés",
+                "Inspection in situ limitée : 20% d'éléments soumis à vérification",
+              ],
+            },
+          ],
+          mat: [
+            {
+              id: "m_b_2",
+              val: 2,
+              title: "Niveau KL2",
+              criteria: [
+                "Plans de construction détaillés",
+                "Essais destructifs et non destructifs limités : 1 essai par niveau",
+              ],
+            },
+            {
+              id: "m_b_3",
+              val: 3,
+              title: "Niveau KL3",
+              criteria: [
+                "Rapports d'essais d'origine",
+                "Essais destructifs et non destructifs limités : 1 essai par niveau",
+              ],
+            },
+          ],
+        },
+      };
+
+      // Génération du code HTML pour un choix incluant la liste intégrale des critères séparés
+      function createRadioHTML(name, item) {
+        const criteriaList = item.criteria
+          .map(
+            (c) => `
+                <li class="flex items-start mb-2">
+                    <svg class="w-4 h-4 mr-2 mt-0.5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    <span class="text-sm text-slate-600 font-medium leading-tight">${c}</span>
+                </li>
+            `,
+          )
+          .join("");
+
+        return `
+                <div class="relative mb-3">
+                    <input type="radio" name="${name}" id="${item.id}" value="${item.val}" class="radio-custom sr-only peer" onchange="calculate()">
+                    <label for="${item.id}" class="block p-4 border border-slate-300 rounded-xl cursor-pointer transition-all hover:bg-white bg-white/50">
+                        <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
+                            <div class="level-badge font-black text-slate-700 text-xs bg-slate-200/60 px-2.5 py-1 rounded-md border border-slate-200 transition-colors">${item.title}</div>
+                            <div class="indicator w-5 h-5 rounded-full border-2 border-slate-300 relative flex-shrink-0 transition-colors"></div>
+                        </div>
+                        <ul class="mt-2">
+                            ${criteriaList}
+                        </ul>
+                    </label>
+                </div>
+            `;
+      }
+
+      // Met à jour les 3 colonnes en fonction de la variante A ou B choisie
+      function updateForm() {
+        const approach = document.querySelector(
+          'input[name="approach"]:checked',
+        ).value;
+
+        document.getElementById("col-geo").innerHTML = db[approach].geo
+          .map((item) => createRadioHTML("geo", item))
+          .join("");
+        document.getElementById("col-disp").innerHTML = db[approach].disp
+          .map((item) => createRadioHTML("disp", item))
+          .join("");
+        document.getElementById("col-mat").innerHTML = db[approach].mat
+          .map((item) => createRadioHTML("mat", item))
+          .join("");
+
+        calculate();
+      }
+
+      // Calcule le résultat global KL = Min(Geo, Disp, Mat)
+      function calculate() {
+        const geoSel = document.querySelector('input[name="geo"]:checked');
+        const dispSel = document.querySelector('input[name="disp"]:checked');
+        const matSel = document.querySelector('input[name="mat"]:checked');
+
+        const valGeo = geoSel ? parseInt(geoSel.value) : 0;
+        const valDisp = dispSel ? parseInt(dispSel.value) : 0;
+        const valMat = matSel ? parseInt(matSel.value) : 0;
+
+        const resKL = document.getElementById("result-kl");
+        const resR = document.getElementById("result-r");
+        const modVerif = document.getElementById("modele-verif");
+
+        // Réinitialisation de la couleur du tableau de synthèse
+        [1, 2, 3].forEach((i) => {
+          const cell = document.getElementById(`cell-kl${i}`);
+          cell.className =
+            "p-5 border-r border-slate-200 transition-all duration-300 text-slate-800 bg-white";
+        });
+
+        // Vérification que les 3 colonnes sont remplies
+        if (valGeo === 0 || valDisp === 0 || valMat === 0) {
+          resKL.textContent = "Sélections incomplètes";
+          resKL.className = "text-2xl font-black text-orange-400 mt-1";
+          resR.textContent = "R = --";
+          resR.className =
+            "text-3xl font-black text-slate-500 bg-slate-900 px-6 py-4 rounded-lg border border-slate-700";
+          modVerif.textContent =
+            "Modèle de vérification de capacité locale : En attente d'évaluation complète de l'ensemble des critères.";
+          return;
+        }
+
+        // Calcul du KL Global
+        const finalKL = Math.min(valGeo, valDisp, valMat);
+
+        // Mise à jour de l'affichage du niveau
+        resKL.textContent = `K-L${finalKL}`;
+        resKL.className =
+          "text-5xl font-black text-green-400 mt-1 drop-shadow-md";
+
+        // Mise à jour du R et du modèle
+        let rValue = "";
+        if (finalKL === 1) {
+          rValue = "1.5";
+          modVerif.innerHTML =
+            "Modèle de vérification de capacité locale : <strong class='text-white'>Modèle Linéaire</strong> exigé.";
+        }
+        if (finalKL === 2) {
+          rValue = "2";
+          modVerif.innerHTML =
+            "Modèle de vérification de capacité locale : <strong class='text-white'>Modèle Linéaire ou Non-linéaire</strong> autorisé.";
+        }
+        if (finalKL === 3) {
+          rValue = "RPA";
+          modVerif.innerHTML =
+            "Modèle de vérification de capacité locale : <strong class='text-white'>Modèle Linéaire ou Non-linéaire</strong> autorisé.";
+        }
+
+        resR.textContent = `R = ${rValue}`;
+        resR.className =
+          "text-4xl font-black text-white bg-green-500 px-8 py-4 rounded-lg shadow-[0_0_20px_rgba(34,197,94,0.4)] border-2 border-green-400";
+
+        // Mise en évidence dynamique dans le tableau
+        const activeCell = document.getElementById(`cell-kl${finalKL}`);
+        activeCell.className =
+          "p-5 transition-all duration-300 bg-green-500 text-white font-black shadow-inner border-green-600 transform scale-105 z-10 relative text-2xl";
+      }
+
+      // Init
+      window.onload = () => {
+        updateForm();
+      };
+    </script>
+  </body>
+</html>
